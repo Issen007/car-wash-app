@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% get_static_prefix as STATIC_URL %}
+
+{% block title %}
+    {{title }}
+{% endblock title %}
+{% block content %}
+<div class="row justify-content-center">
+    <table class="table table-md">
+      <thead>
+        <tr>
+          <th scope="col">BIL</th>
+          <th scope="col">ARBETE</th>
+          <th scope="col">SLUTTID</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for value in work %}
+          <tr>
+            <td class="fw-bolder">{{ value.registration_number }}</td>
+            <td>{{ value.work_type}}</td>
+            <td>{{ value.finish_time|date:"Y-m-d H:i" }}</td>
+          </tr> 
+        {% empty %} 
+            </tbody>
+          </table>      
+          <div class="fw-bolder">Inge Jobb kvar att göra</div>  
+        {% endfor %}  
+      </tbody>
+    </table> 
+</div>
+
+ <!-- Bootstrap Modal Add -->
+ <div class="modal fade" id="workOrderModal" tabindex="-1" aria-labelledby="workOrderModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="workOrderModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'add_work' %}" method="post">
+          {% csrf_token %}
+          <div class="mb-3 mt-3"> <!-- Registration Number -->
+            <label for="registration_number" class="form-label">Registreringnummer</label>
+            <input type="text" class="form-control" id="registration_number" placeholder="ABC123" name="registration_number">
+          </div>
+          <div class="dropdown"> <!-- Work Type -->
+            <select class="form-select" aria-label="Arbete" name="work_type">
+              {% for work in work_type %}
+                <option value="{{ work.work_type }}">{{ work.work_type }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3"> <!-- Email -->
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" name="send_email" id=""flexSwitchCheckEmail" checked>
+              <label class="form-check-label" for=""flexSwitchCheckEmail></label>
+            </div>
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+          </div>
+          <div class="mb-3"> <!-- Phone -->
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" name="send_sms" id=""flexSwitchCheckText" checked>
+              <label class="form-check-label" for=""flexSwitchCheckText></label>
+            </div>
+            <label for="phonenumber" class="form-label">Mobilnummer:</label>
+            <input type="text" class="form-control" id="phonenumber" placeholder="Enter Phonenumber" name="phonenumber">
+          </div>
+          <div class="mb-3"> <!-- Time Picker -->
+              <label for="finish_time" class="form-label">Välj Sluttid</label>
+              <input type="text" class="form-control" id="finish_time" value="2022-09-01 16:00" name="finish_time"/>
+          </div>
+          <button type="submit" class="btn btn-primary">Spara</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

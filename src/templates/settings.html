@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% get_static_prefix as STATIC_URL %}
+
+{% block title %}
+    {{title }}
+{% endblock title %}
+{% block content %}
+<div class="row justify-content-center">
+  <form action="{% url 'add_work_type' %}" method="post">
+    {% csrf_token %}
+    <div class="mb-3 mt-3"> <!-- Add Work -->
+      <label for="work_type" class="form-label">Arbete</label>
+      <input type="text" class="form-control" id="work_type" value="Arbete" name="work_type"/>
+    </div>
+    <button type="submit" class="btn btn-success">Lägg till</button>
+  </form>
+    <table class="table table-md">
+      <thead>
+        <tr>
+          <th scope="col">ARBETE</th>
+          <th scope="col">TA BORT</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for value in data %}
+          <tr>
+            <td class="fw-bolder">{{ value.work_type }}</td>
+            <td>
+              <a href="/work_type/delete/{{ value.id }}"><button type="button" class="btn btn-danger">Ta bort</button></a></td>
+            </td>
+          </tr> 
+        {% empty %} 
+            </tbody>
+          </table>      
+          <div class="fw-bolder">Inga Arbeten skapade</div>  
+        {% endfor %}  
+      </tbody>
+    </table> 
+</div>
+{% endblock %}
