@@ -4,9 +4,15 @@ from rest_framework.viewsets import ModelViewSet
 
 # Apps Specific
 from core.models import work, workType
+from notification.models import EmailSettings
 
 # Serializers
-from .serializers import WorkSerializer, WorkTypeSerializer
+from .serializers import (
+    WorkSerializer, 
+    WorkTypeSerializer,
+    EmailSerializer,
+    )
+    
 
 # Logging
 import logging
@@ -19,3 +25,7 @@ class WorkViewSet(ModelViewSet):
 class WorkTypeViewSet(ModelViewSet):
     serializer_class = WorkTypeSerializer
     queryset = workType.objects.all()
+
+class EmailViewSet(ModelViewSet):
+    serializer_class = EmailSerializer
+    queryset = EmailSettings.objects.all()

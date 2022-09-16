@@ -15,7 +15,7 @@ class EmailSettings(models.Model):
     smtp_user = models.CharField(max_length = 128, default = 'name@company.com', blank=True)
     smtp_password = models.CharField(max_length = 256, default = 'password', blank=True)
     smtp_protocol = models.CharField(max_length = 4, choices=EncryptionType.choices, default=EncryptionType.STARTTLS)
-    smtp_subject = models.TextField(max_length = 64, default = 'Default E-Mail Subject Title', blank=True)
+    smtp_subject = models.CharField(max_length = 64, default = 'Default E-Mail Subject Title', blank=True)
     smtp_body = models.TextField(max_length = 255, default = 'Default Body Field', blank=True)
 
 

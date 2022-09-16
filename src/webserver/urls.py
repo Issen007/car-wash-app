@@ -16,17 +16,18 @@ from .views import (
 app_name = 'webserver'
 
 urlpatterns = [
-    path(r'', HomeView.as_view(), name='home'),
-    path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
-    path('add/', HomeView.as_view(), name='add_work'),
-    path('settings/', SettingsView.as_view(), name='settings'),
-    path('started/<int:id>', Started, name='started'),
-    path('complete/<int:id>', Complete, name='complete'),
-    path('delete/<int:id>', Delete, name='delete'),
-    path('work_type/add/', SettingsView.as_view(), name='add_work_type'),
-    path('work_type/delete/<int:id>', WorkDelete, name='work_delete'),
-    path('view/', ViewMode.as_view(), name='view'),
+    path(r'home/', HomeView.as_view(), name='home'),
+    path(r'admin/', admin.site.urls),
+    path(r'api/', include('api.urls')),
+    path(r'add/', HomeView.as_view(), name='add_work'),
+    path(r'settings/work', SettingsView.as_view(), name='work'),
+    path(r'settings/notification/', include('notification.urls')),
+    path(r'started/<int:id>', Started, name='started'),
+    path(r'complete/<int:id>', Complete, name='complete'),
+    path(r'delete/<int:id>', Delete, name='delete'),
+    path(r'work_type/add/', SettingsView.as_view(), name='add_work_type'),
+    path(r'work_type/delete/<int:id>', WorkDelete, name='work_delete'),
+    path(r'', ViewMode.as_view(), name='view'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

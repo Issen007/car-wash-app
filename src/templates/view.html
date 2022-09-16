@@ -1,11 +1,15 @@
-{% extends 'base.html' %}
-{% load static %}
-{% get_static_prefix as STATIC_URL %}
+{% extends 'base.html'%}
+{% load static%}
+{% get_static_prefix as STATIC_URL%}
 
-{% block title %}
+{% block title%}
     {{title }}
-{% endblock title %}
-{% block content %}
+{% endblock title%}
+{% block meta%}
+<meta http-equiv="refresh" content="60" />
+{% endblock meta%}
+
+{% block content%}
 <div class="row justify-content-center">
     <table class="table table-md">
       <thead>
@@ -16,17 +20,17 @@
         </tr>
       </thead>
       <tbody>
-        {% for value in work %}
+       {% for value in work%}
           <tr>
             <td class="fw-bolder">{{ value.registration_number }}</td>
             <td>{{ value.work_type}}</td>
             <td>{{ value.finish_time|date:"Y-m-d H:i" }}</td>
           </tr> 
-        {% empty %} 
+       {% empty%} 
             </tbody>
           </table>      
           <div class="fw-bolder">Inge Jobb kvar att göra</div>  
-        {% endfor %}  
+       {% endfor%}  
       </tbody>
     </table> 
 </div>
@@ -40,17 +44,17 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="{% url 'add_work' %}" method="post">
-          {% csrf_token %}
+        <form action="{% url 'add_work'%}" method="post">
+         {% csrf_token%}
           <div class="mb-3 mt-3"> <!-- Registration Number -->
             <label for="registration_number" class="form-label">Registreringnummer</label>
             <input type="text" class="form-control" id="registration_number" placeholder="ABC123" name="registration_number">
           </div>
           <div class="dropdown"> <!-- Work Type -->
             <select class="form-select" aria-label="Arbete" name="work_type">
-              {% for work in work_type %}
+             {% for work in work_type%}
                 <option value="{{ work.work_type }}">{{ work.work_type }}</option>
-              {% endfor %}
+             {% endfor%}
             </select>
           </div>
           <div class="mb-3"> <!-- Email -->
@@ -80,4 +84,4 @@
     </div>
   </div>
 </div>
-{% endblock %}
+{% endblock%}

@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views import View
 from django.urls import reverse
 
-from urllib import response
+# from urllib import response
 import requests, json
 from datetime import datetime
 from notification import email
@@ -38,7 +38,6 @@ class ViewMode(View):
 
         return render(request, template_name, context)
 
-
 class HomeView(View):
     def get(self, request, *args, **kwargs):
         template_name = 'home.html'
@@ -51,9 +50,6 @@ class HomeView(View):
             i['timestamp'] = timestamp
             i['finish_time'] = finish_time
             now = datetime.now()
-            print('*' * 100)
-            print(timestamp.hour)
-            print(now.hour)
 
         work_url = "http://localhost:8000/api/v1/work_type/"
         work_response = requests.request("GET", work_url)
@@ -103,7 +99,7 @@ class SettingsView(View):
         url = "http://localhost:8000/api/v1/work_type/"
         response = requests.request("GET", url)
         data = json.loads(response.text)
-
+        print(data)
         context = {
             'title' : 'Settings',
             'header' : 'ArPix',

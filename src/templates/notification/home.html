@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+{% get_static_prefix as STATIC_URL %}
+
+{% block title %}
+    {{title }}
+{% endblock title %}
+{% block content %}
+<div class="row justify-content-center">   
+    <h2>E-Mail Settings</h2>
+    <table class="table table-md">
+        <thead>
+        <tr>
+            <th scope="col">SMTP Server</th>
+            <th scope="col">SMTP Port</th>
+            <th scope="col">Username</th>
+            <th scope="col">Subject</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for value in email %}
+            <tr>
+            <td>{{ value.smtp_server }}</td>
+            <td>{{ value.smtp_port }}</td>
+            <td>{{ value.smtp_user }}</td>
+            <td>{{ value.smtp_subject }}</td>
+            <td>
+                <a href="{% url 'notification:email_update' value.id %}"><button type="button" class="btn btn-success">EDIT</button></a>
+            </td>
+            <td>
+                <a href="{% url 'notification:email_delete' value.id %}"><button type="button" class="btn btn-danger">DELETE</button></a>
+            </td>
+            <td>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#emailOrderModal">TEST</button>
+                <!-- <a href="{% url 'notification:email_test' %}"><button type="button" class="btn btn-primary">TEST</button></a> -->
+            </td>
+            </tr> 
+        {% empty%} 
+            </tbody>
+            </table>      
+            <div class="fw-bolder">Email have not been configured</div> 
+            <a href="{% url 'notification:email_create' %}"><button type="button" class="btn btn-success">Add</button></a>
+        {% endfor%}  
+        </tbody>
+    </table> 
+    <h2>SMS Settings</h2>
+    <table class="table table-md">
+        <thead>
+        <tr>
+            <th scope="col">SMTP Server</th>
+            <th scope="col">SMTP Port</th>
+            <th scope="col">Username</th>
+            <th scope="col">Subject</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for value in sms %}
+            <tr>
+            <td>{{ value.smtp_server }}</td>
+            <td>{{ value.smtp_port }}</td>
+            <td>{{ value.smtp_user }}</td>
+            <td>{{ value.smtp_subject }}</td>
+            <td>
+                <a href="{% url 'notification:email_update' value.id %}"><button type="button" class="btn btn-success">EDIT</button></a>
+            </td>
+            <td>
+                <a href="{% url 'notification:email_delete' value.id %}"><button type="button" class="btn btn-danger">DELETE</button></a>
+            </td>
+            <td>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#emailOrderModal">TEST</button>
+                <!-- <a href="{% url 'notification:email_test' %}"><button type="button" class="btn btn-primary">TEST</button></a> -->
+            </td>
+            </tr> 
+        {% empty%} 
+            </tbody>
+            </table>      
+            <div class="fw-bolder">SMS Service have not been configured</div> 
+            <a href="{% url 'notification:email_create' %}"><button type="button" class="btn btn-success">Add</button></a>
+        {% endfor%}  
+        </tbody>
+    </table> 
+</div>
+
+{% include 'email_modal.html' %}
+
+{% include 'work_modal.html' %}
+
+{% endblock %}

@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'core',
-    'notification'
+    'notification',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
