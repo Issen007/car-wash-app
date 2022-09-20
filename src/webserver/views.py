@@ -5,7 +5,7 @@ from django.urls import reverse
 
 # from urllib import response
 import requests, json
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from notification import email
 
 class ViewMode(View):
@@ -19,10 +19,11 @@ class ViewMode(View):
             finish_time = datetime.strptime(i['finish_time'], '%Y-%m-%dT%H:%M:%S%z')
             i['timestamp'] = timestamp
             i['finish_time'] = finish_time
-            now = datetime.now()
-            print('*' * 100)
-            print(timestamp.hour)
-            print(now.hour)
+            i['emergency'] = False
+            utc_dt = datetime.now(timezone.utc)
+            now = utc_dt.astimezone() + timedelta(hours=1)
+            if (finish_time < now):
+                i['emergency'] = True
 
         work_url = "http://localhost:8000/api/v1/work_type/"
         work_response = requests.request("GET", work_url)
@@ -41,16 +42,21 @@ class ViewMode(View):
 class HomeView(View):
     def get(self, request, *args, **kwargs):
         template_name = 'home.html'
-        url = "http://localhost:8000/api/v1/work/"
+        url = "http://localhost:8000/api/v1/work"
         response = requests.request("GET", url)
         work = json.loads(response.text)
+        
         for i in work:
             timestamp = datetime.strptime(i['timestamp'], '%Y-%m-%dT%H:%M:%S.%f%z')
             finish_time = datetime.strptime(i['finish_time'], '%Y-%m-%dT%H:%M:%S%z')
             i['timestamp'] = timestamp
             i['finish_time'] = finish_time
-            now = datetime.now()
-
+            i['emergency'] = False
+            utc_dt = datetime.now(timezone.utc)
+            now = utc_dt.astimezone() + timedelta(hours=1)
+            if (finish_time < now):
+                i['emergency'] = True
+            print(i)
         work_url = "http://localhost:8000/api/v1/work_type/"
         work_response = requests.request("GET", work_url)
 

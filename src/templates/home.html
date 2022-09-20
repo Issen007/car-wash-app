@@ -7,32 +7,43 @@
 {% endblock title %}
 {% block content %}
 <div class="row justify-content-center">
-    <table class="table table-md">
+  <table class="sortable asc table table-striped rable-bordered table-md" id="workTable" cellspacing="0" width="100%">
       <thead>
         <tr>
-          <th scope="col">IN CHECKAD</th>
-          <th scope="col">BIL</th>
-          <th scope="col">ARBETE</th>
-          <th scope="col">SLUTTID</th>
-          <th scope="col">STATUS</th>
-          <th scope="col">NÄSTA STEG</th>
+          <th data-field="checkin">IN CHECKAD</th>
+          <th data-field="car">BIL</th>
+          <th data-field="work">ARBETE</th>
+          <th data-field="end-time" id="finish-time">SLUTTID</th>
+          <th data-field="status">STATUS</th>
+          <th data-field="next-step">NÄSTA STEG</th>
         </tr>
       </thead>
       <tbody>
-        {% for value in work %}
-          <tr>
+        {% for value in work%}
+          {% if value.completed %}
+          <tr class="bg-success">
             <td>{{ value.timestamp|date:"Y-m-d H:i" }}</td>
             <td class="fw-bolder">{{ value.registration_number }}</td>
             <td>{{ value.work_type}}</td>
-            <td>{{ value.finish_time|date:"Y-m-d H:i" }}</td>
-            {% if value.completed == True %}
-              <td>
-                {{ value.status }} 
-              </td>
-              <td>
-                <a href="{% url 'delete' value.id %}"><button type="button" class="btn btn-danger">HÄMTAD</button></a>
-              </td>
-            {% elif value.started == True %}  
+            <td>DONE</td>
+            <td>
+              {{ value.status }} 
+            </td>
+            <td>
+              <a href="{% url 'delete' value.id %}"><button type="button" class="btn btn-light text-danger">HÄMTAD</button></a>
+            </td>
+          </tr>
+          {% else %}
+          {% if value.emergency %}
+            <tr class="bg-danger">
+          {% else %}
+              <tr>
+          {% endif %}
+              <td>{{ value.timestamp|date:"Y-m-d H:i" }}</td>
+              <td class="fw-bolder">{{ value.registration_number }}</td>
+              <td>{{ value.work_type}}</td>
+              <td>{{ value.finish_time|date:"Y-m-d H:i" }}</td>
+            {% if value.started %}  
               <td>
                 {{ value.status }} 
               </td>
@@ -46,6 +57,7 @@
               <td></td>
             {% endif %}
           </tr> 
+          {% endif %}
         {% empty %} 
             </tbody>
           </table>      
