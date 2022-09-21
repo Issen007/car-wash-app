@@ -6,9 +6,12 @@ from django.urls import reverse
 # from urllib import response
 import requests, json
 from datetime import datetime, timezone, timedelta
-from notification import email
+from notification import message
 
 class ViewMode(View):
+    '''
+    This is a view mode only for our worker to understand what to do next
+    '''
     def get(self, request, *args, **kwargs):
         template_name = 'view.html'
         url = "http://localhost:8000/api/v1/work/"
@@ -40,6 +43,9 @@ class ViewMode(View):
         return render(request, template_name, context)
 
 class HomeView(View):
+    '''
+    Our view to manage all our customer orders
+    '''
     def get(self, request, *args, **kwargs):
         template_name = 'home.html'
         url = "http://localhost:8000/api/v1/work"
@@ -56,7 +62,7 @@ class HomeView(View):
             now = utc_dt.astimezone() + timedelta(hours=1)
             if (finish_time < now):
                 i['emergency'] = True
-            print(i)
+                
         work_url = "http://localhost:8000/api/v1/work_type/"
         work_response = requests.request("GET", work_url)
 
@@ -100,6 +106,9 @@ class HomeView(View):
         return HttpResponseRedirect(reverse('home'))
 
 class SettingsView(View):
+    '''
+    Here is all our settings for all our work types
+    '''
     def get(self, request, *args, **kwargs):
         template_name = 'settings.html'
         url = "http://localhost:8000/api/v1/work_type/"
@@ -115,7 +124,6 @@ class SettingsView(View):
         return render(request, template_name, context)
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
         url = "http://localhost:8000/api/v1/work_type/"
        
         headers = {
@@ -127,9 +135,12 @@ class SettingsView(View):
         })
         
         response = requests.request("POST", url, headers=headers, data=payload)
-        return HttpResponseRedirect(reverse('settings'))
+        return HttpResponseRedirect(reverse('work'))
 
 def Started(request, id):
+    '''
+    We will only update our work that is has started
+    '''
     url = "http://localhost:8000/api/v1/work/" + str(id) + "/"
     payload = json.dumps({ 
         "started": True,
@@ -144,6 +155,11 @@ def Started(request, id):
     return HttpResponseRedirect(reverse('home'))
 
 def Complete(request, id):
+    '''
+    This function is when the user have press Completed work.
+    Here will we update status for our work to Completed, but also notify our customer
+    via Email or/and SMS
+    '''
     url = "http://localhost:8000/api/v1/work/" + str(id) + "/"
     payload = json.dumps({ 
         "started": True,
@@ -159,13 +175,28 @@ def Complete(request, id):
     work_id = json.loads(work_data.text)
     
     if work_id['email_notification']:
+        '''
+        Email Messaging via smtplib library
+        '''
         print('Send Email to ' + work_id['email_address'] + ' for car ' + work_id['registration_number'] )
-        note = email.notification(registration_number=work_id['registration_number'])
+        note = message.notification(registration_number=work_id['registration_number'])
         note.email(email=work_id['email_address'])
+
+    if work_id['sms_notification']:
+        '''
+        SMS Text Message Service via Twilio API
+        '''
+        print('Send SMS to ' + work_id['phonenumber'] + ' for car ' + work_id['registration_number'])
+        note = message.notification(registration_number=work_id['registration_number'])
+        note.sms(phonenumber=work_id['phonenumber'])
 
     return HttpResponseRedirect(reverse('home'))
 
 def Delete(request, id):
+    '''
+    Our work is completed and the customer has collect its car
+    We will delete the work from our database
+    '''
     url = "http://localhost:8000/api/v1/work/" + str(id) + "/"
     payload = {}
     headers = {}
@@ -174,9 +205,12 @@ def Delete(request, id):
     return HttpResponseRedirect(reverse('home'))
 
 def WorkDelete(request, id):
+    '''
+    Here are we removing a type of work from our worklist
+    '''
     url = "http://localhost:8000/api/v1/work_type/" + str(id) + "/"
     payload = {}
     headers = {}
 
     response = requests.request("DELETE", url, headers=headers, data=payload)
-    return HttpResponseRedirect(reverse('settings'))
+    return HttpResponseRedirect(reverse('work'))

@@ -6,11 +6,8 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views import View
 import requests,json
 
-# Forms
-from .forms import EmailForm
-
-from .models import EmailSettings
-from . import email
+from .models import EmailSettings, SMSSettings
+from . import message
 
 class NotificationView(View):
     '''
@@ -28,15 +25,23 @@ class NotificationView(View):
         
         response = requests.request("GET", url, headers=headers, data=payload)
         email = json.loads(response.text)
+        
+        url = "http://localhost:8000/api/v1/sms/"
+        response = requests.request("GET", url, headers=headers, data=payload)
+        sms = json.loads(response.text)
 
         context = {
             'title' : 'Settings',
             'header' : 'ArPix',
-            'email' : email
+            'email' : email,
+            'sms' : sms
         }
         return render(request, template_name, context)
 
 class EmailCreateView(CreateView):
+    '''
+    Setup your Email SMTP Settings
+    '''
     template_name = 'notification/email_form.html'
     model = EmailSettings
     success_url = reverse_lazy('notification:home')
@@ -47,10 +52,12 @@ class EmailCreateView(CreateView):
         'smtp_password',
         'smtp_subject',
         'smtp_body'
-
     ]
 
 class EmailUpdateView(UpdateView):
+    '''
+    Update your Email Settings
+    '''
     template_name = 'notification/email_form.html'
     model = EmailSettings
     success_url = reverse_lazy('notification:home')
@@ -61,7 +68,6 @@ class EmailUpdateView(UpdateView):
         'smtp_password',
         'smtp_subject',
         'smtp_body'
-
     ]
 
 class EmailTestView(View):
@@ -70,13 +76,13 @@ class EmailTestView(View):
     '''
     def post(self, request, *args, **kwargs):
         response = json.dumps(request.POST)
-        email_address = json.loads(response)
-        text = email.notification(registration_number='ABC123')
-        text.email(email=email_address['email_address'])
+        response = json.loads(response)
+        text = message.notification(registration_number='ABC123')
+        text.email(email=response['email_address'])
         
         return HttpResponseRedirect(reverse_lazy('notification:home'))
         
-def Delete(request, id):
+def EmailDelete(request, id):
     '''
     Delete SMTP Settings from our database
     '''
@@ -87,30 +93,58 @@ def Delete(request, id):
     response = requests.request("DELETE", url, headers=headers, data=payload)
     return HttpResponseRedirect(reverse_lazy('notification:home'))
 
-# class EmilSettingsView(FormView):
-#     def get(self, request, *args, **kwargs):
-#         template_name = 'email.html'
-        
+class SMSCreateView(CreateView):
+    '''
+    Setup SMS Settings
+    '''
+    template_name = 'notification/email_form.html'
+    model = SMSSettings
+    success_url = reverse_lazy('notification:home')
+    fields = [
+        'account_sid',
+        'auth_token',
+        'message_sid',
+        'country_code',
+        'phonenumber',
+        'body'
+    ]
 
-#         context = {
-#             'title' : 'Settings',
-#             'header' : 'ArPix',
-#             'data' : data
-#         }
+class SMSUpdateView(UpdateView):
+    '''
+    Update your SMS Settings
+    '''
+    template_name = 'notification/email_form.html'
+    model = SMSSettings
+    success_url = reverse_lazy('notification:home')
+    fields = [
+        'account_sid',
+        'auth_token',
+        'message_sid',
+        'country_code',
+        'phonenumber',
+        'body'
+    ]
 
-#         return render(request, template_name, context)
+class SMSTestView(View):
+    '''
+    This is a test function to verify if you SMS Service are correct.
+    '''
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        response = json.dumps(request.POST)
+        response = json.loads(response)
+        text = message.notification(registration_number='ABC123')
+        text.sms(phonenumber=response['phonenumber'])
+        
+        return HttpResponseRedirect(reverse_lazy('notification:home'))
+        
+def SMSDelete(request, id):
+    '''
+    Delete SMS Settings from our database
+    '''
+    url = "http://localhost:8000/api/v1/sms/" + str(id) + "/"
+    payload = {}
+    headers = {}
 
-#     def post(self, request, *args, **kwargs):
-#         form = EmailForm
-#         url = "http://localhost:8000/api/v1/email/"
-       
-#         headers = {
-#             'Content-Type': 'application/json'
-#         }
-        
-#         payload = json.dumps({
-#             "work_type": request.POST['work_type'],
-#         })
-        
-#         response = requests.request("POST", url, headers=headers, data=payload)
-#         return HttpResponseRedirect(reverse('settings'))
+    response = requests.request("DELETE", url, headers=headers, data=payload)
+    return HttpResponseRedirect(reverse_lazy('notification:home'))

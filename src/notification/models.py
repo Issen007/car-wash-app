@@ -4,7 +4,6 @@ from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 class EmailSettings(models.Model):
-    
     class EncryptionType(models.TextChoices):
         STARTTLS = 'STLS', _('STARTTLS')
         TLS = 'TLS', _('TLS')
@@ -21,3 +20,14 @@ class EmailSettings(models.Model):
 
     def __str__(self):
         return str(self.smtp_server)
+
+class SMSSettings(models.Model):
+    account_sid = models.CharField(max_length = 128, default = 'client_id', blank=False)
+    auth_token = models.CharField(max_length = 128, default = 'token', blank=False)
+    message_sid = models.CharField(max_length = 128, default = 'message_id', blank=True)
+    country_code = models.IntegerField(default = 46)
+    phonenumber = models.IntegerField(default = 70123456)
+    body = models.TextField(max_length = 255, default = 'Default Body Field', blank=True)
+
+    def __str__(self):
+        return str(self.account_sid)

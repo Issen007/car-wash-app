@@ -50,10 +50,10 @@
     <table class="table table-md">
         <thead>
         <tr>
-            <th scope="col">SMTP Server</th>
-            <th scope="col">SMTP Port</th>
-            <th scope="col">Username</th>
-            <th scope="col">Subject</th>
+            <th scope="col">SMS Service</th>
+            <th scope="col">Account SID</th>
+            <th scope="col">Phonenumber</th>
+            <th scope="col">Message</th>
             <th scope="col"></th>
             <th scope="col"></th>
             <th scope="col"></th>
@@ -62,32 +62,32 @@
         <tbody>
         {% for value in sms %}
             <tr>
-            <td>{{ value.smtp_server }}</td>
-            <td>{{ value.smtp_port }}</td>
-            <td>{{ value.smtp_user }}</td>
-            <td>{{ value.smtp_subject }}</td>
+            <td>Twilio</td>
+            <td>{{ value.account_sid }}</td>
+            <td>{{ value.phonenumber }}</td>
+            <td>{{ value.body }}</td>
             <td>
-                <a href="{% url 'notification:email_update' value.id %}"><button type="button" class="btn btn-success">EDIT</button></a>
+                <a href="{% url 'notification:sms_update' value.id %}"><button type="button" class="btn btn-success">EDIT</button></a>
             </td>
             <td>
-                <a href="{% url 'notification:email_delete' value.id %}"><button type="button" class="btn btn-danger">DELETE</button></a>
+                <a href="{% url 'notification:sms_delete' value.id %}"><button type="button" class="btn btn-danger">DELETE</button></a>
             </td>
             <td>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#emailOrderModal">TEST</button>
-                <!-- <a href="{% url 'notification:email_test' %}"><button type="button" class="btn btn-primary">TEST</button></a> -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#smsOrderModal">TEST</button>
             </td>
             </tr> 
         {% empty%} 
             </tbody>
             </table>      
             <div class="fw-bolder">SMS Service have not been configured</div> 
-            <a href="{% url 'notification:email_create' %}"><button type="button" class="btn btn-success">Add</button></a>
+            <a href="{% url 'notification:sms_create' %}"><button type="button" class="btn btn-success">Add</button></a>
         {% endfor%}  
         </tbody>
     </table> 
 </div>
 
 {% include 'email_modal.html' %}
+{% include 'sms_modal.html' %}
 
 {% include 'work_modal.html' %}
 

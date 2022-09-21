@@ -4,13 +4,14 @@ from rest_framework.viewsets import ModelViewSet
 
 # Apps Specific
 from core.models import work, workType
-from notification.models import EmailSettings
+from notification.models import EmailSettings, SMSSettings
 
 # Serializers
 from .serializers import (
     WorkSerializer, 
     WorkTypeSerializer,
     EmailSerializer,
+    SMSSerializer,
     )
     
 
@@ -29,3 +30,7 @@ class WorkTypeViewSet(ModelViewSet):
 class EmailViewSet(ModelViewSet):
     serializer_class = EmailSerializer
     queryset = EmailSettings.objects.all()
+
+class SMSViewSet(ModelViewSet):
+    serializer_class = SMSSerializer
+    queryset = SMSSettings.objects.all()
