@@ -24,10 +24,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-d5moyapa-sr^1ycn1yh0-f2xgt0q=t4)yjfbu41)ai5na#=s%c'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
-
+DEBUG_MODE = os.environ.get('DEBUG', True)
+if DEBUG_MODE == 'False':
+    DEBUG = False
+    from socket import gethostname, gethostbyname
+    ALLOWED_HOSTS = [ gethostname(), gethostbyname(gethostname()), '127.0.0.1', 'localhost', os.environ.get('ALLOWED_HOST')]
+else:
+    DEBUG = True
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # Application definition
 
@@ -82,9 +86,13 @@ WSGI_APPLICATION = 'webserver.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+     "default": {
+        "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
+        "HOST": os.environ.get("DB_HOST", "localhost"),
+        "PORT": os.environ.get("DB_PORT", "5432"),
+        "NAME": os.environ.get("POSTGRES_DATABASE", BASE_DIR / "db.sqlite3"),
+        "USER": os.environ.get("POSTGRES_USER", "user"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "password"),
     }
 }
 
