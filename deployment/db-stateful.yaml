@@ -19,33 +19,19 @@ spec:
 
           volumeMounts:
             - name: postgresql-db-disk
-              mountPath: /data
+              mountPath: /var/lib/postgresql/data
           envFrom:
             - configMapRef:
                 name: carwash-env-db
-          # env:
-            # - name: PGDATA
-            #   value: /data/pgdata
-            # - name: POSTGRESQL_LOG_HOSTNAME
-            #   value: "true"
-            # - name: POSTGRESQL_LOG_CONNECTIONS
-            #   value: "false"
-            # - name: POSTGRESQL_LOG_DISCONNECTIONS
-            #   value: "false"
-            # - name: POSTGRESQL_PGAUDIT_LOG_CATALOG
-            #   value: "off"
-            # - name: POSTGRESQL_CLIENT_MIN_MESSAGES
-            #   value: "error"
-            # - name: POSTGRESQL_SHARED_PRELOAD_LIBRARIES
-            #   value: "pgaudit, repmgr"
-            # - name: POSTGRESQL_ENABLE_TLS
-            #   value: "no"
-      # Volume Claim
-  volumeClaimTemplates:
-    - metadata:
-        name: postgresql-db-disk
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 1Gi
+      volumes:
+        - name: postgresql-db-disk
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim
+  # volumeClaimTemplates:
+  #   - metadata:
+  #       name: postgresql-db-disk
+  #     spec:
+  #       accessModes: ["ReadWriteOnce"]
+  #       resources:
+  #         requests:
+  #           storage: 1Gi
