@@ -72,6 +72,7 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.template.context_processors.static',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -90,7 +91,7 @@ DATABASES = {
         "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
         "HOST": os.environ.get("DB_HOST", "localhost"),
         "PORT": os.environ.get("DB_PORT", "5432"),
-        "NAME": os.environ.get("POSTGRES_DATABASE", BASE_DIR / "db.sqlite3"),
+        "NAME": os.environ.get("POSTGRES_DB", BASE_DIR / "db.sqlite3"),
         "USER": os.environ.get("POSTGRES_USER", "user"),
         "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "password"),
     }
@@ -146,9 +147,10 @@ USE_TZ = True
 if DEBUG:
     print('### DEBUG MODE ###')
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    
 else:
     STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
-    MEDIA_ROOT = os.path.join(os.environ.get('REPO_DIR', ''),'media_root')
+    MEDIA_ROOT = os.path.join(BASE_DIR,'media_root')
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_URL = '/static/'

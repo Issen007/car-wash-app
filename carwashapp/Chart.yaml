@@ -1,6 +1,0 @@
-apiVersion: v2
-name: carwashapp
-description: A Helm chart for Car Wash App
-type: application
-version: 0.1.0
-appVersion: 0.1.0

@@ -1,5 +1,5 @@
 # Pulling Python Docker Base Image
-from python:3-alpine
+FROM python:3-alpine
 
 # Set our Working Directory
 WORKDIR /src
@@ -28,3 +28,5 @@ RUN pip install -r requirements.txt
 
 # Copy Project to our source directory
 COPY ./src/ /src/
+
+CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "webserver.wsgi"]

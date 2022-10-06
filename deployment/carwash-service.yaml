@@ -1,0 +1,39 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: carwash-external
+spec:
+  type: LoadBalancer
+  ports: 
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  # type: ClusterIP
+  # ports:
+  #   - name: django
+  #     port: 8000
+  #     protocol: TCP
+  # type: ExternalName
+  # ports:
+  # - name: http
+  #   port: 80
+  #   targetPort: 8000
+  #   protocol: TCP
+  # externalName: carwashapp.local
+  selector:
+    app: carwash
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: carwash-external-ingress
+spec:
+  routes:
+    - kind: Rule
+      match: Host(`carwashapp.local`)
+      priority: 10
+      services:
+        - name: carwash-external
+          passHostHeader: True
+          port: 8080

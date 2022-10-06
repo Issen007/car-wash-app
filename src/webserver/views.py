@@ -8,6 +8,9 @@ import requests, json
 from datetime import datetime, timezone, timedelta
 from notification import message
 
+import logging
+log = logging.getLogger(__name__)
+
 class ViewMode(View):
     '''
     This is a view mode only for our worker to understand what to do next
@@ -88,10 +91,18 @@ class HomeView(View):
         value_check = json.loads(data)
         if not 'send_email' in value_check:
             value_check['send_email'] = False
-        
+            value_check['email_address'] = 'info@foo.local'
+                    
         if not 'send_sms' in value_check:
             value_check['send_sms'] = False
+            value_check['phonenumber'] = '0701234567'
 
+        if 'phonenumber' in value_check:
+            phone_value = value_check['phonenumber']
+            if phone_value[0] == '0':
+                phone_value = phone_value.replace(phone_value[0], '+46', 1)
+                value_check['phonenumber'] = phone_value
+    
         payload = json.dumps({
             "registration_number": value_check['registration_number'],
             "email_address": value_check['email'],
@@ -178,7 +189,7 @@ def Complete(request, id):
         '''
         Email Messaging via smtplib library
         '''
-        print('Send Email to ' + work_id['email_address'] + ' for car ' + work_id['registration_number'] )
+        log.info('Send Email to ' + work_id['email_address'] + ' for car ' + work_id['registration_number'] )
         note = message.notification(registration_number=work_id['registration_number'])
         note.email(email=work_id['email_address'])
 
@@ -186,7 +197,7 @@ def Complete(request, id):
         '''
         SMS Text Message Service via Twilio API
         '''
-        print('Send SMS to ' + work_id['phonenumber'] + ' for car ' + work_id['registration_number'])
+        log.info('Send SMS to ' + work_id['phonenumber'] + ' for car ' + work_id['registration_number'])
         note = message.notification(registration_number=work_id['registration_number'])
         note.sms(phonenumber=work_id['phonenumber'])
 

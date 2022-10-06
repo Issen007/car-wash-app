@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: carwashapp
+  labels:
+    app: carwash
+spec:
+  selector:
+    matchLabels:
+      app: carwash
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: carwash
+    spec:
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: nginx-configmap
+        - name: staticfiles
+          emptyDir: {}
+      containers:
+        - name: nginx
+          image: nginx:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: nginx
+              containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: nginx-conf
+              mountPath: /etc/nginx/conf.d/
+            - name: staticfiles
+              mountPath: /src/static_root
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30
+        - name: carwash
+          image: isstech/carwashapp:latest
+          imagePullPolicy: Always
+          command: ["/src/start-django.sh"]
+          envFrom:
+          - configMapRef:
+              name: carwash-env-db
+          ports:
+            - containerPort: 8000
+              name: gunicorn
+          volumeMounts:
+            - name: staticfiles
+              mountPath: /src/static_root
