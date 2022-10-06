@@ -27,11 +27,3 @@ spec:
         - name: postgresql-db-disk
           persistentVolumeClaim:
             claimName: postgres-pv-claim
-  # volumeClaimTemplates:
-  #   - metadata:
-  #       name: postgresql-db-disk
-  #     spec:
-  #       accessModes: ["ReadWriteOnce"]
-  #       resources:
-  #         requests:
-  #           storage: 1Gi
