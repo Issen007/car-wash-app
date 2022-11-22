@@ -9,6 +9,7 @@ from .views import (
     Started,
     Complete,
     Delete,
+    Edit,
     WorkDelete,
     ViewMode,
 )
@@ -23,6 +24,7 @@ urlpatterns = [
     path(r'settings/work', SettingsView.as_view(), name='work'),
     path(r'settings/notification/', include('notification.urls')),
     path(r'started/<int:id>', Started, name='started'),
+    path(r'edit/<int:id>', Edit, name='edit'),
     path(r'complete/<int:id>', Complete, name='complete'),
     path(r'delete/<int:id>', Delete, name='delete'),
     path(r'work_type/add/', SettingsView.as_view(), name='add_work_type'),

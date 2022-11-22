@@ -1,16 +1,16 @@
 <!-- Bootstrap Modal Add -->
-<div class="modal fade" id="workOrderModal" tabindex="-1" aria-labelledby="workOrderModalLabel" aria-hidden="true">
+<div class="modal fade" id="editWorkModal" tabindex="-1" aria-labelledby="editWorkModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="workOrderModalLabel">Modal title</h5>
+          <h5 class="modal-title" id="editWorkModalLabel">Modal title</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <form action="{% url 'add_work' %}" method="post">
             {% csrf_token %}
             <div class="mb-3 mt-3"> <!-- Registration Number -->
-              <label for="registration_number" class="form-label">Registreringnummer</label>
+              <label for="registration_number" class="form-label">Registreringnummer2</label>
               <input type="text" class="form-control" id="registration_number" placeholder="ABC123" name="registration_number">
             </div>
             <div class="dropdown"> <!-- Work Type -->

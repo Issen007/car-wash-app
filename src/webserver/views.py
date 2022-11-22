@@ -54,7 +54,7 @@ class HomeView(View):
         url = "http://localhost:8000/api/v1/work"
         response = requests.request("GET", url)
         work = json.loads(response.text)
-        
+        work_string = json.loads(response.text)
         for i in work:
             timestamp = datetime.strptime(i['timestamp'], '%Y-%m-%dT%H:%M:%S.%f%z')
             finish_time = datetime.strptime(i['finish_time'], '%Y-%m-%dT%H:%M:%S%z')
@@ -65,17 +65,28 @@ class HomeView(View):
             now = utc_dt.astimezone() + timedelta(hours=1)
             if (finish_time < now):
                 i['emergency'] = True
+        
+        for i in work_string:
+            timestamp = datetime.strptime(i['timestamp'], '%Y-%m-%dT%H:%M:%S.%f%z')
+            finish_time = datetime.strptime(i['finish_time'], '%Y-%m-%dT%H:%M:%S%z')
+            timestamp = timestamp.strftime('%Y-%m-%d %H:%M')
+            finish_time = finish_time.strftime('%Y-%m-%d %H:%M')
+            i['timestamp'] = timestamp
+            i['finish_time'] = finish_time
+            i['emergency'] = False        
                 
         work_url = "http://localhost:8000/api/v1/work_type/"
         work_response = requests.request("GET", work_url)
 
         work_type = json.loads(work_response.text)
 
+        print(work_string)
+
         context = {
             'title' : 'ArPix',
             'header' : 'ArPix',
-            'work' : work,
-            'work_type': work_type
+            'work' : work_string,
+            'work_type': work_type,
         }
 
         return render(request, template_name, context)
@@ -164,6 +175,22 @@ def Started(request, id):
 
     response = requests.request("PATCH", url, headers=headers, data=payload)
     return HttpResponseRedirect(reverse('home'))
+
+def Edit(request, id):
+    '''
+    We will only update our work that is has started
+    '''
+    url = "http://localhost:8000/api/v1/work/" + str(id) + "/"
+    payload = {}
+
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    print(json.dumps(request.POST, indent=4))
+    
+    # response = requests.request("GET", url, headers=headers, data=payload)
+    return HttpResponseRedirect(reverse('home'))
+
 
 def Complete(request, id):
     '''

@@ -14,23 +14,24 @@
           <th data-field="car">BIL</th>
           <th data-field="work">ARBETE</th>
           <th data-field="end-time" id="finish-time">SLUTTID</th>
-          <th data-field="status">STATUS</th>
-          <th data-field="next-step">NÄSTA STEG</th>
+          <th data-field="status">NÄSTA STEG</th>
+          <th data-field="next-step">MODIFERA</th>
         </tr>
       </thead>
       <tbody>
         {% for value in work%}
           {% if value.completed %}
           <tr class="bg-success">
-            <td>{{ value.timestamp|date:"Y-m-d H:i" }}</td>
+            <!-- <td>{{ value.timestamp|date:"Y-m-d H:i" }}</td> -->
+            <td>{{ value.timestamp }}
             <td class="fw-bolder">{{ value.registration_number }}</td>
             <td>{{ value.work_type}}</td>
             <td>DONE</td>
             <td>
-              {{ value.status }} 
+              <a href="{% url 'delete' value.id %}"><button type="button" class="btn btn-light text-danger">HÄMTAD</button></a>
             </td>
             <td>
-              <a href="{% url 'delete' value.id %}"><button type="button" class="btn btn-light text-danger">HÄMTAD</button></a>
+              <!-- <button id="change-button" type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editWorkModal" data-bs-work="'{{ value }}'">ÄNDRA</button> --><a href="{% url 'delete' value.id %}"><button type="button" class="btn btn-light text-danger">TA BORT</button></a>
             </td>
           </tr>
           {% else %}
@@ -39,34 +40,41 @@
           {% else %}
               <tr>
           {% endif %}
-              <td>{{ value.timestamp|date:"Y-m-d H:i" }}</td>
+              <!-- <td>{{ value.timestamp|date:"Y-m-d H:i" }}</td> -->
+              <td>{{ value.timestamp }}</td>
               <td class="fw-bolder">{{ value.registration_number }}</td>
-              <td>{{ value.work_type}}</td>
-              <td>{{ value.finish_time|date:"Y-m-d H:i" }}</td>
+              <td>{{ value.work_type }}</td>
+              <!-- <td>{{ value.finish_time|date:"Y-m-d H:i" }}</td> -->
+              <td>{{ value.finish_time }}</td>
             {% if value.started %}  
               <td>
-                {{ value.status }} 
+                <a href="{% url 'complete' value.id %}"><button type="button" class="btn btn-success">KLAR</button></a>
               </td>
               <td>
-                <a href="{% url 'complete' value.id %}"><button type="button" class="btn btn-success">KLAR</button></a>
+                <!--<button id="change-button" type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editWorkModal" data-bs-work="{{ value }}">ÄNDRA</button> --><a href="{% url 'delete' value.id %}"><button type="button" class="btn btn-light text-danger">TA BORT</button></a>
               </td>
             {% else %}
               <td>
                 <a href="{% url 'started' value.id %}"><button type="button" class="btn btn-primary">BÖRJA</button></a></td>
               </td>
-              <td></td>
+              <td>
+                <!--<button id="change-button" type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editWorkModal" data-bs-work="{{ value }}">ÄNDRA</button>  --><a href="{% url 'delete' value.id %}"><button type="button" class="btn btn-light text-danger">TA BORT</button></a>
+              </td>
             {% endif %}
           </tr> 
           {% endif %}
         {% empty %} 
             </tbody>
           </table>      
-          <div class="fw-bolder">Inge Jobb kvar att göra</div>  
-        {% endfor %}  
+          <div class="fw-bolder">Inget jobb kvar att göra</div>  
+          {% endfor %}  
       </tbody>
     </table> 
 </div>
 
+{% include 'edit_work.html' %}
 {% include 'work_modal.html' %}
 
 {% endblock %}
+
+
